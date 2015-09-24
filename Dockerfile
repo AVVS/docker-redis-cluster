@@ -1,11 +1,7 @@
 # This tag use ubuntu 14.04
-FROM phusion/baseimage:0.9.16
-
-MAINTAINER Johan Grokzen Andersson <Grokzen@gmail.com>
+FROM ubuntu:trusty
 
 ENV HOME /root
-
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 # Some Environment Variables
 ENV DEBIAN_FRONTEND noninteractive
@@ -32,7 +28,7 @@ RUN apt-get install -y gcc make g++ build-essential libc6-dev tcl git supervisor
 RUN apt-get install -y rubygems
 
 # checkout the 3.0 (Cluster support) branch from official repo
-RUN git clone -b 3.0 https://github.com/antirez/redis.git
+RUN git clone -b 3.0.4 https://github.com/antirez/redis.git
 
 # Build redis from source
 RUN (cd /redis && make)
@@ -53,7 +49,6 @@ ADD ./docker-data/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD ./docker-data/start.sh /start.sh
 RUN chmod 755 /start.sh
 
-# TODO: This command is the one that should be runned but currently start.sh script crashes out with an error
-# CMD ["/sbin/my_init", "--enable-insecure-key", "--", "/bin/bash -c '/start.sh'"]
+EXPOSE 7000 7001 7002 7003 7004 7005 7006 7007
 
 CMD ["/bin/bash", "/start.sh"]
